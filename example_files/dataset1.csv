@@ -1,0 +1,43 @@
+Data Point ID,Risk Type,Variable Name,Description,Variable Value
+S001,Schedule Risk,Project Start Date,The date that the project was started,2023-02-01 00:00:00
+S002,Schedule Risk,Planned Milestone Date (Phase 1),The planned date for achieving the first milestone,2023-07-15 00:00:00
+S003,Schedule Risk,Actual Milestone Date (Phase 1),The actual date when the first milestone was achieved,2023-08-01 00:00:00
+S004,Schedule Risk,Task Dependencies,Schedule-related tasks that are dependent on each other,Task C depends on Task D
+S005,Schedule Risk,Historical Delay Data,Historical data on task delays,15% of tasks delayed by 3 weeks
+S006,Schedule Risk,Resource Availability,Availability of required personnel,75% of required personnel available
+C001,Cost Risk,Initial Budget Estimate,The initial estimated budget for the project,6000000
+C002,Cost Risk,Actual Expenditures,The actual expenditures incurred during the project,6800000
+C003,Cost Risk,Cost Variance,The difference between the initial budget estimate and actual expenditures,800000
+C004,Cost Risk,Inflation Rate,The rate of inflation affecting project costs,0.04
+C005,Cost Risk,Unanticipated Expenses,Unexpected expenses that arose during the project,300000
+C006,Cost Risk,Funding Sources,Sources of project funding,"Government grants, private investment"
+T001,Technical Risk,Technology Readiness Level (TRL),The maturity level of the technology being used,5
+T002,Technical Risk,Performance Metrics,Metrics related to the performance of the technology,"90% accuracy, 3ms response time"
+T003,Technical Risk,Failure Rates,The failure rate of the technology,7% failure rate
+T004,Technical Risk,Prototype Testing Results,Results of initial prototype testing,Passed initial tests with minor issues
+T005,Technical Risk,Integration Challenges,Challenges encountered during technology integration,High difficulty
+R001,Requirements Risk,Initial Requirements,The initial set of project requirements,60 requirements
+R002,Requirements Risk,Requirement Changes,Changes made to the initial requirements,15 changes
+R003,Requirements Risk,Scope Creep Incidents,Instances where the project scope expanded beyond initial plans,5 incidents
+R004,Requirements Risk,Stakeholder Feedback,Feedback from stakeholders on requirements and changes,Mixed feedback on changes
+R005,Requirements Risk,Requirement Stability,The stability of the project requirements,70% stable
+SC001,Supply Chain Risk,Supplier Information,Information about suppliers,"Supplier D, E, F"
+SC002,Supply Chain Risk,Lead Times,The average time taken by suppliers to deliver materials,6 weeks
+SC003,Supply Chain Risk,Supply Chain Disruptions,Records of past supply chain disruptions,3 disruptions in the past year
+SC004,Supply Chain Risk,Geopolitical Factors,Geopolitical events that may impact the supply chain,High risk
+SC005,Supply Chain Risk,Inventory Levels,Current inventory levels of critical components,60% of critical components in stock
+W001,Workforce Risk,Personnel Availability,Availability of skilled personnel,85% of skilled personnel available
+W002,Workforce Risk,Training Records,Training and qualifications of team members,75% of team members trained
+W003,Workforce Risk,Contractor Performance,Performance data of contractors,80% satisfactory performance
+W004,Workforce Risk,Turnover Rates,The rate at which personnel leave the project or organization,12% annual turnover
+W005,Workforce Risk,Workforce Gaps,Gaps in required skills and personnel,10% gap in required skills
+RC001,Regulatory & Compliance Risk,Regulatory Changes,Changes in relevant regulations and policies,5 changes in the past year
+RC002,Regulatory & Compliance Risk,Compliance Audits,Results of compliance audits,Passed most audits
+RC003,Regulatory & Compliance Risk,Cybersecurity Incidents,Records of past cybersecurity incidents,2 incidents in the past year
+RC004,Regulatory & Compliance Risk,Export Control Data,Compliance with export control regulations,Compliant with regulations
+RC005,Regulatory & Compliance Risk,Legal Requirements,Compliance with legal requirements,Met most legal requirements
+I001,Integration Risk,Legacy System Data,Data on existing systems that need to be integrated,Data on 7 legacy systems
+I002,Integration Risk,Compatibility Issues,Issues encountered during system compatibility testing,3 major issues
+I003,Integration Risk,Interoperability Standards,Standards and protocols for ensuring interoperability,Adhered to standards
+I004,Integration Risk,Integration Testing Results,Results of integration testing,Passed most tests
+I005,Integration Risk,System Dependencies,Dependencies between different systems and components,4 critical dependencies

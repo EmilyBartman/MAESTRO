@@ -1,0 +1,17 @@
+Risk ID,Risk Type,Description,Likelihood (1-5),Impact (1-5),Mitigation Plan
+R001,Schedule Risk,Delays in program milestones due to unrealistic timelines,4,5,"Reevaluate timelines, add buffer periods, and monitor dependencies"
+R002,Schedule Risk,Dependencies on other programs causing delays,3,4,Establish clear communication channels and contingency plans
+R003,Cost Risk,Budget overruns due to inaccurate cost estimates,5,5,Implement regular cost reviews and adjust estimates based on actuals
+R004,Cost Risk,Inflation causing increased material costs,3,3,Negotiate long-term contracts with suppliers to lock in prices
+R005,Technical Risk,Challenges in meeting performance requirements due to immature technology,4,4,Conduct thorough technology readiness assessments and prototype testing
+R006,Technical Risk,Unproven technology leading to integration issues,3,5,Collaborate with technology experts and conduct phased integration testing
+R007,Requirements Risk,Unstable requirements leading to scope creep,4,4,Implement strict change control processes and regular requirement reviews
+R008,Requirements Risk,Evolving requirements causing redesign efforts,3,3,Engage stakeholders early and maintain flexible design approaches
+R009,Supply Chain Risk,Dependencies on single suppliers,4,5,Identify alternative suppliers and diversify the supply chain
+R010,Supply Chain Risk,Geopolitical issues affecting material availability,2,4,Monitor geopolitical developments and establish contingency plans
+R011,Workforce Risk,Insufficient skilled personnel,5,4,Invest in training programs and hire additional skilled workers
+R012,Workforce Risk,Contractor performance issues,3,3,Implement performance monitoring and establish clear contract terms
+R013,Regulatory & Compliance Risk,Changes in cybersecurity requirements impacting program execution,4,5,Stay updated with regulatory changes and implement necessary security measures
+R014,Regulatory & Compliance Risk,Export control regulations affecting material procurement,3,4,Ensure compliance with export regulations and seek necessary approvals
+R015,Integration Risk,Difficulties in integrating new systems with legacy infrastructure,4,5,Conduct thorough integration testing and engage legacy system experts
+R016,Integration Risk,Ensuring interoperability across platforms,3,4,Develop and adhere to interoperability standards and conduct compatibility tests

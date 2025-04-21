@@ -1,0 +1,43 @@
+Data Point ID,Variable Name,Description,Value
+S001,Project Start Date,The date that the project was started,2024-03-01 00:00:00
+S002,Planned Milestone Date (Phase 1),The planned date for achieving the first milestone,2024-09-30 00:00:00
+S003,Actual Milestone Date (Phase 1),The actual date when the first milestone was achieved,2024-10-15 00:00:00
+S004,Task Dependencies,Schedule-related tasks that are dependent on each other,Task G depends on Task H
+S005,Historical Delay Data,Historical data on task delays,12% of tasks delayed by 1.5 months
+S006,Resource Availability,Availability of required personnel,90% of required personnel available
+C001,Initial Budget Estimate,The initial estimated budget for the project,4500000
+C002,Actual Expenditures,The actual expenditures incurred during the project,5200000
+C003,Cost Variance,The difference between the initial budget estimate and actual expenditures,700000
+C004,Inflation Rate,The rate of inflation affecting project costs,0.028
+C005,Unanticipated Expenses,Unexpected expenses that arose during the project,250000
+C006,Funding Sources,Sources of project funding,Government R&D grants
+T001,Technology Readiness Level (TRL),The maturity level of the technology being used,8
+T002,Performance Metrics,Metrics related to the performance of the technology,"97% reliability, 1.5ms response time"
+T003,Failure Rates,The failure rate of the technology,4% failure rate
+T004,Prototype Testing Results,Results of initial prototype testing,Passed with minor adjustments
+T005,Integration Challenges,Challenges encountered during technology integration,Moderate difficulty
+R001,Initial Requirements,The initial set of project requirements,55 requirements
+R002,Requirement Changes,Changes made to the initial requirements,8 changes
+R003,Scope Creep Incidents,Instances where the project scope expanded beyond initial plans,4 incidents
+R004,Stakeholder Feedback,Feedback from stakeholders on requirements and changes,Generally positive feedback
+R005,Requirement Stability,The stability of the project requirements,85% stable
+SC001,Supplier Information,Information about suppliers,"Supplier J, K, L"
+SC002,Lead Times,The average time taken by suppliers to deliver materials,5 weeks
+SC003,Supply Chain Disruptions,Records of past supply chain disruptions,2 disruptions in the past year
+SC004,Geopolitical Factors,Geopolitical events that may impact the supply chain,Moderate risk
+SC005,Inventory Levels,Current inventory levels of critical components,75% of critical components in stock
+W001,Personnel Availability,Availability of skilled personnel,88% of skilled personnel available
+W002,Training Records,Training and qualifications of team members,85% of team members trained
+W003,Contractor Performance,Performance data of contractors,82% satisfactory performance
+W004,Turnover Rates,The rate at which personnel leave the project or organization,9% annual turnover
+W005,Workforce Gaps,Gaps in required skills and personnel,7% gap in required skills
+RC001,Regulatory Changes,Changes in relevant regulations and policies,4 changes in the past year
+RC002,Compliance Audits,Results of compliance audits,Passed most audits
+RC003,Cybersecurity Incidents,Records of past cybersecurity incidents,1 incident in the past year
+RC004,Export Control Data,Compliance with export control regulations,Compliant with regulations
+RC005,Legal Requirements,Compliance with legal requirements,Met most legal requirements
+I001,Legacy System Data,Data on existing systems that need to be integrated,Data on 4 legacy systems
+I002,Compatibility Issues,Issues encountered during system compatibility testing,2 major issues
+I003,Interoperability Standards,Standards and protocols for ensuring interoperability,Adhered to standards
+I004,Integration Testing Results,Results of integration testing,Passed most tests
+I005,System Dependencies,Dependencies between different systems and components,3 critical dependencies

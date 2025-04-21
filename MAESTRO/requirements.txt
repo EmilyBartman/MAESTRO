@@ -1,0 +1,14 @@
+streamlit
+langchain
+langchain-openai
+langchain-community
+langchain-unstructured
+faiss-cpu
+pyngrok
+python-dotenv
+unstructured
+PyPDF2
+python-docx
+pandas
+plotly
+
