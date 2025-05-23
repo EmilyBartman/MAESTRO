@@ -1,36 +1,30 @@
-# -*- coding: utf-8 -*-
-# STREAMLIT DEPLOYMENT VERSION (SECURE DISCLAIMER ADDED)
+# === Unified MAESTRO Full App with All File Format Support ===
 
+import streamlit as st
+from pathlib import Path
+import pandas as pd
+import docx
+import json
 import os
 import re
-import io
-import json
-import plotly.graph_objects as go
-import pandas as pd
 from collections import defaultdict
-from PIL import Image
-from pathlib import Path
-import streamlit as st
 from dotenv import load_dotenv
-import warnings
 from concurrent.futures import ThreadPoolExecutor
-import docx
-
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-warnings.filterwarnings("ignore", category=pd.errors.ParserWarning)
 
 st.set_page_config(page_title="MAESTRO: Component Risk", layout="centered")
 
 # === SECURITY DISCLAIMER ===
 st.warning("⚠️ DO NOT upload or enter classified or sensitive national security information into this application. This prototype is not authorized for handling classified data.")
 
+# === Load environment variables ===
 load_dotenv()
 IFI_API_KEY = os.getenv("IFI_API_KEY")
 
+# === Ensure required folders ===
 for folder in ['historical_documents', 'risks_document', 'target_document', 'outputs', 'local_program_data']:
     Path(folder).mkdir(parents=True, exist_ok=True)
 
-# === Normalization and Matching ===
+# === Utility Functions ===
 
 def normalize_units(value):
     if isinstance(value, str):
@@ -72,33 +66,19 @@ def match_component_to_spec(component_data, sae_specs, user_inputs):
             return True, f"Component matches SAE specification: {spec.get('id', 'N/A')}"
     return False, f"No SAE spec match found. Issues: {'; '.join(reasons)}"
 
-@st.cache_data(show_spinner=False)
-def load_specs_from_file(file_path):
-    ext = file_path.suffix.lower()
-    if ext == ".csv":
-        return pd.read_csv(file_path).to_dict(orient="records")
-    elif ext == ".json":
-        return json.load(open(file_path))
-    else:
-        raise ValueError("Unsupported file type for specs")
-
-@st.cache_data(show_spinner=False)
-def load_component_file(file):
+def parse_uploaded_file(file):
     ext = file.name.split('.')[-1].lower()
-    if ext in ['xls', 'xlsx']:
+    if ext == "csv":
+        return pd.read_csv(file)
+    elif ext in ["xls", "xlsx"]:
         return pd.read_excel(file)
-    return pd.read_csv(file)
-
-def parse_program_info(file):
-    ext = file.name.split('.')[-1].lower()
-    if ext == 'docx':
+    elif ext == "json":
+        return json.load(file)
+    elif ext == "docx":
         doc = docx.Document(file)
-        return "\n".join([para.text for para in doc.paragraphs])
-    elif ext in ['xls', 'xlsx']:
-        df = pd.read_excel(file)
-        return df.to_string()
+        return "\n".join([p.text for p in doc.paragraphs])
     else:
-        return "Unsupported file format."
+        return "Unsupported file format"
 
 def process_bulk_components(component_df, sae_specs, user_inputs):
     def evaluate_row(row):
@@ -115,20 +95,7 @@ def process_bulk_components(component_df, sae_specs, user_inputs):
             "risk_reduction": 0 if not is_match else 100
         }
     with ThreadPoolExecutor() as executor:
-        results = list(executor.map(evaluate_row, [row for _, row in component_df.iterrows()]))
-    return results
-
-def save_program_data(program_name, data):
-    save_path = Path("local_program_data") / f"{program_name}.json"
-    with open(save_path, "w") as f:
-        json.dump(data, f, indent=2)
-
-def load_program_data(program_name):
-    load_path = Path("local_program_data") / f"{program_name}.json"
-    if not load_path.exists():
-        return {}
-    with open(load_path, "r") as f:
-        return json.load(f)
+        return list(executor.map(evaluate_row, [row for _, row in component_df.iterrows()]))
 
 def generate_component_summary(component, match, reason):
     if match:
@@ -149,60 +116,72 @@ def suggest_alternatives(component, sae_specs):
             candidates.append({"spec": spec, "differences": differences})
     return candidates
 
-# === Streamlit UI ===
+def save_program_data(program_name, data):
+    path = Path("local_program_data") / f"{program_name}.json"
+    with open(path, "w") as f:
+        json.dump(data, f, indent=2)
 
-st.title("MAESTRO: Component Risk")
+def load_program_data(program_name):
+    path = Path("local_program_data") / f"{program_name}.json"
+    if not path.exists():
+        return {}
+    with open(path, "r") as f:
+        return json.load(f)
 
+# === Sidebar Input ===
 st.sidebar.header("Component Requirement Inputs")
 user_inputs = {}
-input_keys = ["type", "value", "tolerance", "voltage", "package", "temp_rating"]
-for key in input_keys:
-    user_val = st.sidebar.text_input(f"Required {key.title()}:", "")
-    if user_val.strip():
-        user_inputs[key] = user_val.strip()
+for key in ["type", "value", "tolerance", "voltage", "package", "temp_rating"]:
+    val = st.sidebar.text_input(f"Required {key.title()}:", "")
+    if val.strip():
+        user_inputs[key] = val.strip()
 
 st.sidebar.markdown("---")
 st.sidebar.write("User specs must support SAE compliance — never override.")
 
-spec_file = st.file_uploader("Upload SAE Specs File (CSV/JSON/DOCX/XLSX/XLS/DOC):", type=["csv", "json", "docx", "xlsx", "xls", "doc"])
-component_file = st.file_uploader("Upload Component List File (CSV/JSON/DOCX/XLSX/XLS/DOC):", type=["csv", "json", "docx", "xlsx", "xls", "doc"])
-program_info_file = st.file_uploader("Upload Program Info Document (CSV/JSON/DOCX/XLSX/XLS/DOC):", type=["csv", "json", "docx", "xlsx", "xls", "doc"])
+# === Uploads ===
+spec_file = st.file_uploader("Upload SAE Specs File (CSV, JSON, DOCX, XLSX, XLS, DOC):", type=["csv", "json", "docx", "xlsx", "xls", "doc"])
+component_file = st.file_uploader("Upload Component List File (CSV, JSON, DOCX, XLSX, XLS, DOC):", type=["csv", "json", "docx", "xlsx", "xls", "doc"])
+program_info_file = st.file_uploader("Upload Program Info Document (CSV, JSON, DOCX, XLSX, XLS, DOC):", type=["csv", "json", "docx", "xlsx", "xls", "doc"])
 program_name = st.text_input("Program Name", "demo_program")
 
 if program_info_file:
-    program_text = parse_program_info(program_info_file)
-    st.text_area("Extracted Program Info", program_text, height=300)
+    parsed = parse_uploaded_file(program_info_file)
+    if isinstance(parsed, str):
+        st.text_area("Extracted Program Info", parsed, height=300)
+    else:
+        st.dataframe(parsed)
 
+# === Evaluation ===
 if st.button("🔍 Run Evaluation"):
     if spec_file and component_file:
         try:
-            spec_path = Path("sae_temp." + spec_file.name.split(".")[-1])
-            with open(spec_path, "wb") as f:
-                f.write(spec_file.getvalue())
+            sae_specs = parse_uploaded_file(spec_file)
+            component_data = parse_uploaded_file(component_file)
 
-            sae_specs = load_specs_from_file(spec_path)
-            component_df = load_component_file(component_file)
+            if isinstance(sae_specs, list):
+                component_df = pd.DataFrame(component_data)
+                results = process_bulk_components(component_df, sae_specs, user_inputs)
+                save_program_data(program_name, results)
 
-            results = process_bulk_components(component_df, sae_specs, user_inputs)
-            save_program_data(program_name, results)
+                for res in results:
+                    st.markdown("---")
+                    st.markdown(res["summary"])
+                    if not res["match"] and res["alternatives"]:
+                        st.markdown("**🔁 Suggested Alternatives:**")
+                        for alt in res["alternatives"]:
+                            st.json(alt)
 
-            for res in results:
-                st.markdown("---")
-                st.markdown(res["summary"])
-                if not res["match"] and res["alternatives"]:
-                    st.markdown("**🔁 Suggested Alternatives:**")
-                    for alt in res["alternatives"]:
-                        st.json(alt)
-
-            st.download_button("📄 Export Results (JSON)", json.dumps(results, indent=2), file_name=f"{program_name}_results.json")
-            txt_summary = "\n\n".join(r['summary'] for r in results)
-            st.download_button("📃 Export Summary (TXT)", txt_summary, file_name=f"{program_name}_results.txt")
-
+                st.download_button("📄 Export Results (JSON)", json.dumps(results, indent=2), file_name=f"{program_name}_results.json")
+                st.download_button("📃 Export Summary (TXT)", "\n\n".join(r['summary'] for r in results), file_name=f"{program_name}_results.txt")
+            else:
+                st.error("SAE Specs file must be JSON array of spec objects.")
         except Exception as e:
             st.error(f"⚠️ Error during processing: {e}")
     else:
         st.warning("Please upload both spec and component files.")
 
+# === Load Past Data ===
 st.markdown("---")
 st.subheader("📁 Load Previous Program")
 all_programs = sorted([f.stem for f in Path("local_program_data").glob("*.json")])
