@@ -11,4 +11,4 @@ PyPDF2
 python-docx
 pandas
 plotly
-
+openpyxl
