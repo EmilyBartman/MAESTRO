@@ -84,6 +84,9 @@ def load_specs_from_file(file_path):
 
 @st.cache_data(show_spinner=False)
 def load_component_file(file):
+    ext = file.name.split('.')[-1].lower()
+    if ext in ['xls', 'xlsx']:
+        return pd.read_excel(file)
     return pd.read_csv(file)
 
 def parse_program_info(file):
@@ -161,9 +164,9 @@ for key in input_keys:
 st.sidebar.markdown("---")
 st.sidebar.write("User specs must support SAE compliance — never override.")
 
-spec_file = st.file_uploader("Upload SAE Specs File (CSV/JSON):", type=["csv", "json"])
-component_file = st.file_uploader("Upload Component List File (CSV):", type=["csv"])
-program_info_file = st.file_uploader("Upload Program Info Document (DOCX, XLSX, XLS):", type=["docx", "xlsx", "xls"])
+spec_file = st.file_uploader("Upload SAE Specs File (CSV/JSON/DOCX/XLSX/XLS/DOC):", type=["csv", "json", "docx", "xlsx", "xls", "doc"])
+component_file = st.file_uploader("Upload Component List File (CSV/JSON/DOCX/XLSX/XLS/DOC):", type=["csv", "json", "docx", "xlsx", "xls", "doc"])
+program_info_file = st.file_uploader("Upload Program Info Document (CSV/JSON/DOCX/XLSX/XLS/DOC):", type=["csv", "json", "docx", "xlsx", "xls", "doc"])
 program_name = st.text_input("Program Name", "demo_program")
 
 if program_info_file:
