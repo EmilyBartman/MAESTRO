@@ -14,12 +14,16 @@ import streamlit as st
 from dotenv import load_dotenv
 import warnings
 from concurrent.futures import ThreadPoolExecutor
+import docx
+import textract
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 warnings.filterwarnings("ignore", category=pd.errors.ParserWarning)
 
+st.set_page_config(page_title="MAESTRO: Component Risk", layout="centered")
+
 # === SECURITY DISCLAIMER ===
-st.warning("⚠️ DO NOT upload or enter classified or sensitive national security information into this application. This prototype is not authorized for handling classified data.", icon="🔐")
+st.warning("\u26a0\ufe0f DO NOT upload or enter classified or sensitive national security information into this application. This prototype is not authorized for handling classified data.", icon="🔐")
 
 load_dotenv()
 IFI_API_KEY = os.getenv("IFI_API_KEY")
@@ -31,7 +35,7 @@ for folder in ['historical_documents', 'risks_document', 'target_document', 'out
 
 def normalize_units(value):
     if isinstance(value, str):
-        value = value.replace("µ", "u").replace("Ω", "ohm").replace("k", "000").lower()
+        value = value.replace("µ", "u").replace("Ω", "ohm").replace("k", "000").lower()
     return str(value).strip()
 
 def within_tolerance(expected, actual, tolerance=0.05):
@@ -82,6 +86,20 @@ def load_specs_from_file(file_path):
 @st.cache_data(show_spinner=False)
 def load_component_file(file):
     return pd.read_csv(file)
+
+def parse_program_info(file):
+    ext = file.name.split('.')[-1].lower()
+    if ext == 'docx':
+        doc = docx.Document(file)
+        return "\n".join([para.text for para in doc.paragraphs])
+    elif ext == 'doc':
+        text = textract.process(file.name)
+        return text.decode('utf-8')
+    elif ext in ['xls', 'xlsx']:
+        df = pd.read_excel(file)
+        return df.to_string()
+    else:
+        return "Unsupported file format."
 
 def process_bulk_components(component_df, sae_specs, user_inputs):
     def evaluate_row(row):
@@ -134,6 +152,8 @@ def suggest_alternatives(component, sae_specs):
 
 # === Streamlit UI ===
 
+st.title("MAESTRO: Component Risk")
+
 st.sidebar.header("Component Requirement Inputs")
 user_inputs = {}
 input_keys = ["type", "value", "tolerance", "voltage", "package", "temp_rating"]
@@ -145,10 +165,14 @@ for key in input_keys:
 st.sidebar.markdown("---")
 st.sidebar.write("User specs must support SAE compliance — never override.")
 
-st.title("📦 Component Risk Evaluator Prototype")
 spec_file = st.file_uploader("Upload SAE Specs File (CSV/JSON):", type=["csv", "json"])
 component_file = st.file_uploader("Upload Component List File (CSV):", type=["csv"])
+program_info_file = st.file_uploader("Upload Program Info Document (DOCX, DOC, XLSX, XLS):", type=["docx", "doc", "xlsx", "xls"])
 program_name = st.text_input("Program Name", "demo_program")
+
+if program_info_file:
+    program_text = parse_program_info(program_info_file)
+    st.text_area("Extracted Program Info", program_text, height=300)
 
 if st.button("🔍 Run Evaluation"):
     if spec_file and component_file:
@@ -171,16 +195,15 @@ if st.button("🔍 Run Evaluation"):
                     for alt in res["alternatives"]:
                         st.json(alt)
 
-            st.download_button("📤 Export Results (JSON)", json.dumps(results, indent=2), file_name=f"{program_name}_results.json")
+            st.download_button("📄 Export Results (JSON)", json.dumps(results, indent=2), file_name=f"{program_name}_results.json")
             txt_summary = "\n\n".join(r['summary'] for r in results)
-            st.download_button("📄 Export Summary (TXT)", txt_summary, file_name=f"{program_name}_results.txt")
+            st.download_button("📃 Export Summary (TXT)", txt_summary, file_name=f"{program_name}_results.txt")
 
         except Exception as e:
             st.error(f"⚠️ Error during processing: {e}")
     else:
         st.warning("Please upload both spec and component files.")
 
-# === Program History Loader ===
 st.markdown("---")
 st.subheader("📁 Load Previous Program")
 all_programs = sorted([f.stem for f in Path("local_program_data").glob("*.json")])
@@ -195,3 +218,4 @@ if all_programs:
                 st.markdown("**🔁 Alternatives Suggested:**")
                 for alt in entry['alternatives']:
                     st.json(alt)
+
