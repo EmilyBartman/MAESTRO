@@ -22,7 +22,7 @@ warnings.filterwarnings("ignore", category=pd.errors.ParserWarning)
 st.set_page_config(page_title="MAESTRO: Component Risk", layout="centered")
 
 # === SECURITY DISCLAIMER ===
-st.warning("\u26a0\ufe0f DO NOT upload or enter classified or sensitive national security information into this application. This prototype is not authorized for handling classified data.", icon="\ud83d\udd10")
+st.warning("⚠️ DO NOT upload or enter classified or sensitive national security information into this application. This prototype is not authorized for handling classified data.")
 
 load_dotenv()
 IFI_API_KEY = os.getenv("IFI_API_KEY")
@@ -34,7 +34,7 @@ for folder in ['historical_documents', 'risks_document', 'target_document', 'out
 
 def normalize_units(value):
     if isinstance(value, str):
-        value = value.replace("\u00b5", "u").replace("\u2126", "ohm").replace("k", "000").lower()
+        value = value.replace("µ", "u").replace("Ω", "ohm").replace("k", "000").lower()
     return str(value).strip()
 
 def within_tolerance(expected, actual, tolerance=0.05):
@@ -170,7 +170,7 @@ if program_info_file:
     program_text = parse_program_info(program_info_file)
     st.text_area("Extracted Program Info", program_text, height=300)
 
-if st.button("\ud83d\udd0d Run Evaluation"):
+if st.button("🔍 Run Evaluation"):
     if spec_file and component_file:
         try:
             spec_path = Path("sae_temp." + spec_file.name.split(".")[-1])
@@ -187,30 +187,30 @@ if st.button("\ud83d\udd0d Run Evaluation"):
                 st.markdown("---")
                 st.markdown(res["summary"])
                 if not res["match"] and res["alternatives"]:
-                    st.markdown("**\ud83d\udd01 Suggested Alternatives:**")
+                    st.markdown("**🔁 Suggested Alternatives:**")
                     for alt in res["alternatives"]:
                         st.json(alt)
 
-            st.download_button("\ud83d\udcc4 Export Results (JSON)", json.dumps(results, indent=2), file_name=f"{program_name}_results.json")
+            st.download_button("📄 Export Results (JSON)", json.dumps(results, indent=2), file_name=f"{program_name}_results.json")
             txt_summary = "\n\n".join(r['summary'] for r in results)
-            st.download_button("\ud83d\udcc3 Export Summary (TXT)", txt_summary, file_name=f"{program_name}_results.txt")
+            st.download_button("📃 Export Summary (TXT)", txt_summary, file_name=f"{program_name}_results.txt")
 
         except Exception as e:
-            st.error(f"\u26a0\ufe0f Error during processing: {e}")
+            st.error(f"⚠️ Error during processing: {e}")
     else:
         st.warning("Please upload both spec and component files.")
 
 st.markdown("---")
-st.subheader("\ud83d\udcc1 Load Previous Program")
+st.subheader("📁 Load Previous Program")
 all_programs = sorted([f.stem for f in Path("local_program_data").glob("*.json")])
 if all_programs:
     selected_program = st.selectbox("Select a saved program:", all_programs)
-    if st.button("\ud83d\udd04 Load Program"):
+    if st.button("🔄 Load Program"):
         data = load_program_data(selected_program)
         for entry in data:
             st.markdown("---")
             st.markdown(entry['summary'])
             if not entry['match'] and entry['alternatives']:
-                st.markdown("**\ud83d\udd01 Alternatives Suggested:**")
+                st.markdown("**🔁 Alternatives Suggested:**")
                 for alt in entry['alternatives']:
                     st.json(alt)
