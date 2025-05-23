@@ -156,26 +156,35 @@ if program_info_file:
 if st.button("🔍 Run Evaluation"):
     if spec_file and component_file:
         try:
-            sae_specs = parse_uploaded_file(spec_file)
-            component_data = parse_uploaded_file(component_file)
-
-            if isinstance(sae_specs, list):
-                component_df = pd.DataFrame(component_data)
-                results = process_bulk_components(component_df, sae_specs, user_inputs)
-                save_program_data(program_name, results)
-
-                for res in results:
-                    st.markdown("---")
-                    st.markdown(res["summary"])
-                    if not res["match"] and res["alternatives"]:
-                        st.markdown("**🔁 Suggested Alternatives:**")
-                        for alt in res["alternatives"]:
-                            st.json(alt)
-
-                st.download_button("📄 Export Results (JSON)", json.dumps(results, indent=2), file_name=f"{program_name}_results.json")
-                st.download_button("📃 Export Summary (TXT)", "\n\n".join(r['summary'] for r in results), file_name=f"{program_name}_results.txt")
+            sae_raw = parse_uploaded_file(spec_file)
+            if isinstance(sae_raw, pd.DataFrame):
+                sae_specs = sae_raw.to_dict(orient="records")
+            elif isinstance(sae_raw, list):
+                sae_specs = sae_raw
             else:
-                st.error("SAE Specs file must be JSON array of spec objects.")
+                st.error("SAE Specs must be a JSON array or tabular file.")
+                st.stop()
+
+            component_data = parse_uploaded_file(component_file)
+            if isinstance(component_data, pd.DataFrame):
+                component_df = component_data
+            else:
+                st.error("Component file must be structured tabular data.")
+                st.stop()
+
+            results = process_bulk_components(component_df, sae_specs, user_inputs)
+            save_program_data(program_name, results)
+
+            for res in results:
+                st.markdown("---")
+                st.markdown(res["summary"])
+                if not res["match"] and res["alternatives"]:
+                    st.markdown("**🔁 Suggested Alternatives:**")
+                    for alt in res["alternatives"]:
+                        st.json(alt)
+
+            st.download_button("📄 Export Results (JSON)", json.dumps(results, indent=2), file_name=f"{program_name}_results.json")
+            st.download_button("📃 Export Summary (TXT)", "\n\n".join(r['summary'] for r in results), file_name=f"{program_name}_results.txt")
         except Exception as e:
             st.error(f"⚠️ Error during processing: {e}")
     else:
