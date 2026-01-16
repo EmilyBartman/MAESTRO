@@ -1,5 +1,6 @@
 streamlit
 langchain
+langchain-core
 langchain-openai
 langchain-community
 langchain-unstructured
@@ -12,3 +13,5 @@ python-docx
 pandas
 plotly
 openpyxl
+
+
