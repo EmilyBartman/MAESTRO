@@ -28,7 +28,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain_unstructured import UnstructuredLoader
 from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain.schema import Document as LCDocument
+from langchain_core.documents import Document as LCDocument
 from PyPDF2 import PdfReader
 from docx import Document
 import warnings
