@@ -24,8 +24,7 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 from dotenv import load_dotenv
-from langchain.chains import LLMChain
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 from langchain_unstructured import UnstructuredLoader
 from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
@@ -218,7 +217,7 @@ class RAGProcurementRisksAnalysis:
         
 
     
-        chain = LLMChain(llm=llm, prompt=prompt_template)
+        chain = prompt_template | llm
         print("📦 Inputs to chain.run():")
         print("retrieved_docs_str:", bool(retrieved_docs_str))
         print("risks_document_content:", bool(risks_content))
@@ -242,9 +241,9 @@ class RAGProcurementRisksAnalysis:
         
         
         try:
-            response_obj = chain.invoke(inputs)
+            msg = chain.invoke(inputs)  
             # 1. Get LLM raw text response
-            response_text = response_obj.get("text", "") if isinstance(response_obj, dict) else str(response_obj)
+            response_text = getattr(msg, "content", str(msg))
             
             # 2. Clean response
             response_text = response_text.strip()
